@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Insta Tracker</string>
+    <string name="buttonGPS">Find your location</string>
+    <string name="locationTextView">Your Location</string>
+    <integer name="com_vk_sdk_AppId">6360897</integer>
+</resources>
