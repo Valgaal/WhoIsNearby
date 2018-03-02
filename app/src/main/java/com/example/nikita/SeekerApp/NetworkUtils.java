@@ -51,7 +51,7 @@ public class NetworkUtils {
      * @return The contents of the HTTP response.
      * @throws IOException Related to network and stream reading
      */
-    public static ArrayList<ArrayList<String>> getResponseFromHttpUrl(URL url) throws IOException {
+    public static String getResponseFromHttpUrl(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         try {
             InputStream in = urlConnection.getInputStream();
@@ -62,20 +62,9 @@ public class NetworkUtils {
             boolean hasInput = scanner.hasNext();
             if (hasInput) {
                 String response = scanner.next();
-                JSONObject responseObject = new JSONObject(response);
-                JSONArray responseArray = responseObject.getJSONArray("response");
-                ArrayList<ArrayList<String>> outter = new ArrayList<>();
-                ArrayList<String> inner;
-                for( int i = 0; i <= 200; i++){
-                    inner = new ArrayList<>();
-                    JSONObject userInfoObject = responseArray.getJSONObject(i);
-                    inner.add(userInfoObject.getString("owner_id"));
-                    inner.add(userInfoObject.getString("src"));
-                    outter.add(inner);
-                }
-                return outter;
+                return response;
             }
-        } catch (JSONException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             urlConnection.disconnect();

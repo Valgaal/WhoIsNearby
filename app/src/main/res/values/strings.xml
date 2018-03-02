@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Insta Tracker</string>
     <string name="buttonGPS">Find your location</string>
-    <string name="locationTextView">Your Location</string>
+    <string name="latitudeTextView">Your Latitude</string>
+    <string name="longitudeTextView">Your Longitude</string>
+    <string name="contentDecription">User Photo</string>
+    <string name="userIdTextView">User ID</string>
     <integer name="com_vk_sdk_AppId">6360897</integer>
+    <string name="token">Token</string>
+    <string name="longitude">Longitude</string>
+    <string name="latitude">Latitude</string>
 </resources>
