@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity{
 
                 SharedPreferences settings = getSharedPreferences("Token & Location", MODE_PRIVATE);
                 SharedPreferences.Editor editor = settings.edit();
-                editor.putString(getString(R.string.token), "").commit();
+                editor.putString(getString(R.string.token), "").commit();//найти как получить токен
                 Intent intent = new Intent(MainActivity.this, CheckLocationActivity.class);
                 startActivity(intent);
             }

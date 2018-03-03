@@ -19,10 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.net.URL;
-
 public class CheckLocationFragment extends Fragment{
-    private UserInfo mUSerInfo;
     private TextView mLatitude;
     private TextView mLongitude;
     private static final int TAG_CODE_PERMISSION_LOCATION = 0;
@@ -31,20 +28,27 @@ public class CheckLocationFragment extends Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        mUSerInfo = new UserInfo();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_checklocation, container, false);
 
         mLatitude = (TextView) v.findViewById(R.id.latitudeTextView);
         mLongitude = (TextView) v.findViewById(R.id.longtitudeTextView);
+        Button mShow = (Button) v.findViewById(R.id.showButton);
         Button mLocationButton = (Button) v.findViewById(R.id.buttonGPS);
         mLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 checkLocation();
+            }
+        });
+        mShow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), PhotoListActivity.class);
+                startActivity(intent);
             }
         });
         return v;
@@ -63,7 +67,7 @@ public class CheckLocationFragment extends Fragment{
                     TAG_CODE_PERMISSION_LOCATION);
         }
         Intent intent = new Intent(getActivity(), gpsTracker.class);
-        startService(intent);
+        getActivity().startService(intent);
 
         IntentFilter statusIntentFilter = new IntentFilter(
                 gpsTracker.BROADCAST_ACTION);
@@ -84,6 +88,11 @@ public class CheckLocationFragment extends Fragment{
             String cords[] = intent.getStringArrayExtra(gpsTracker.EXTENDED_DATA);
             mLatitude.setText(cords[0]);
             mLongitude.setText(cords[1]);
+            SharedPreferences settings = getActivity().getSharedPreferences("Token & Location", 0);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putString(getString(R.string.latitude), cords[0]);
+            editor.putString(getString(R.string.longitude), cords[1]);
+            editor.commit();
         }
     }
 }

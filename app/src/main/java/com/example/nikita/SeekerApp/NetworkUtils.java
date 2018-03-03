@@ -27,13 +27,14 @@ public class NetworkUtils {
     private final static String PARAM_TOKEN = "access_token";
     private final static String PARAM_SORT = "sort";
     private final static String PARAM_COUNT = "count";
+    private final static String PARAM_VERSION = "version";
 
 
     public static URL buildUrl(String mLat, String mLong, String mRadius, String mToken) {
         Uri buildUri = Uri.parse(VK_BASE_URL).buildUpon().appendQueryParameter(PARAM_LATTITUDE, mLat)
                 .appendQueryParameter(PARAM_LONGTITUDE, mLong).appendQueryParameter(PARAM_RADIUS, mRadius)
                 .appendQueryParameter(PARAM_TOKEN, mToken).appendQueryParameter(PARAM_SORT, "0")
-                .appendQueryParameter(PARAM_COUNT, "200").build();
+                .appendQueryParameter(PARAM_COUNT, "200").appendQueryParameter(PARAM_VERSION, "5.73").build();
         URL url = null;
         try {
             url = new URL(buildUri.toString());

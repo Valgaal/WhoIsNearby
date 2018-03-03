@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 public class PhotoListFragment extends Fragment {
@@ -30,8 +32,13 @@ public class PhotoListFragment extends Fragment {
     private void updateUI(){
         UserInfoList userInfoList = UserInfoList.get(getActivity());
         List<UserInfo>  userInfos = userInfoList.getUserInfos();
-        mAdapter = new PhotoAdapter(userInfos);
-        mPhotoRecyclerView.setAdapter(mAdapter);
+
+        if ( mAdapter == null) {
+            mAdapter = new PhotoAdapter(userInfos);
+            mPhotoRecyclerView.setAdapter(mAdapter);
+        } else{
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     private class PhotoHolder extends RecyclerView.ViewHolder{
@@ -50,7 +57,7 @@ public class PhotoListFragment extends Fragment {
         public void bind(UserInfo userInfo) {
             mUserInfo = userInfo;
             mIdTextView.setText(mUserInfo.getVKId());
-           /// mPhotoImageView picasso
+            Picasso.with(getActivity()).load(mUserInfo.getPhoto_url()).into(mPhotoImageView);/// mPhotoImageView picasso
         }
     }
 
