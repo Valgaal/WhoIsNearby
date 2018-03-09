@@ -1,5 +1,6 @@
 package com.example.nikita.SeekerApp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -41,8 +42,9 @@ public class PhotoListFragment extends Fragment {
         }
     }
 
-    private class PhotoHolder extends RecyclerView.ViewHolder{
+    private class PhotoHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        private static final String EXTRA_USER_ID ="user_id";
         private TextView mIdTextView;
         private ImageView mPhotoImageView;
         private UserInfo mUserInfo;
@@ -52,12 +54,21 @@ public class PhotoListFragment extends Fragment {
 
             mIdTextView = (TextView) itemView.findViewById(R.id.userIdTextView);
             mPhotoImageView = (ImageView) itemView.findViewById(R.id.photoImageView);
+            mIdTextView.setOnClickListener(this);
+            mPhotoImageView.setOnClickListener(this);
         }
 
         public void bind(UserInfo userInfo) {
             mUserInfo = userInfo;
             mIdTextView.setText(mUserInfo.getVKId());
             Picasso.with(getActivity()).load(mUserInfo.getPhoto_url()).into(mPhotoImageView);/// mPhotoImageView picasso
+        }
+
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(getActivity(), SelectedUserActivity.class);
+            intent.putExtra(EXTRA_USER_ID, mUserInfo.getId());
+            startActivity(intent);
         }
     }
 

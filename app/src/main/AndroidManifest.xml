@@ -15,9 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service android:name=".gpsTracker" />
-        <activity android:name=".PhotoListActivity"/>
-        <activity android:name=".CheckLocationActivity"/>
 
+        <activity android:name=".PhotoListActivity" />
+        <activity android:name=".CheckLocationActivity" />
         <activity
             android:name="com.vk.sdk.VKServiceActivity"
             android:label="ServiceActivity"
@@ -29,6 +29,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".SelectedUserActivity"></activity>
     </application>
 
 </manifest>

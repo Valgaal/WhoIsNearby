@@ -64,6 +64,12 @@ public class UserInfoList {
                     JSONObject userInfoObject = responseArray.getJSONObject(i);
                     userInfoFromWeb.setVKid(userInfoObject.getString("owner_id"));
                     userInfoFromWeb.setPhoto_url(userInfoObject.getString("src_big"));
+                    if(userInfoObject.has("src_xxxbig")) {
+                        userInfoFromWeb.setBigPhoto_url(userInfoObject.getString("src_xxxbig"));
+                    } else if(userInfoObject.has("src_xxbig")) {
+                        userInfoFromWeb.setBigPhoto_url(userInfoObject.getString("src_xxbig"));
+                         }
+
                     mUserInfos.add(userInfoFromWeb);
                 }
                 return mUserInfos;

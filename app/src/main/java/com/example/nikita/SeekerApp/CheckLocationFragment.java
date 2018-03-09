@@ -1,6 +1,5 @@
 package com.example.nikita.SeekerApp;
 
-
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;

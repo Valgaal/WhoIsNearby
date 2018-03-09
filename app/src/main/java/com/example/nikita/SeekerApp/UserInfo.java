@@ -6,6 +6,7 @@ public class UserInfo {
     private String photo_url;
     private UUID mId;
     private String mVKId;
+    private String bigPhoto_url;
 
     public UserInfo(){
         mId = UUID.randomUUID();
@@ -29,5 +30,13 @@ public class UserInfo {
 
     public String getPhoto_url() {
         return photo_url;
+    }
+
+    public void setBigPhoto_url(String photo_url) {
+        this.bigPhoto_url = photo_url;
+    }
+
+    public String getBigPhoto_url() {
+        return bigPhoto_url;
     }
 }
