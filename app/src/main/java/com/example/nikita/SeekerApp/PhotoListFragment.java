@@ -1,6 +1,7 @@
 package com.example.nikita.SeekerApp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -13,33 +14,52 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.net.URL;
 import java.util.List;
 
-public class PhotoListFragment extends Fragment {
+public class PhotoListFragment extends Fragment implements ResponseCallback {
 
     private RecyclerView mPhotoRecyclerView;
     private PhotoAdapter mAdapter;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_photolist, container, false);
         mPhotoRecyclerView = (RecyclerView) view.findViewById(R.id.photo_recycler_view);
         mPhotoRecyclerView.setLayoutManager( new GridLayoutManager(getActivity(),2));
-
-        updateUI();
+        new GetPhotosNearbyDataTask(this).execute(makeUrl());
         return view;
+
     }
 
-    private void updateUI(){
-        UserInfoList userInfoList = UserInfoList.get(getActivity());
-        List<UserInfo>  userInfos = userInfoList.getUserInfos();
+    private URL makeUrl(){
+        SharedPreferences settings = getActivity().getSharedPreferences("Token & Location", 0);
+        String mToken = settings.getString(getActivity().getString(R.string.token),"");
+        String mLatitude = settings.getString(getActivity().getString(R.string.latitude),"");
+        String mLongitude = settings.getString(getActivity().getString(R.string.longitude),"");
+        URL vkSearch = NetworkUtils.buildUrl(mLatitude, mLongitude, "500", mToken);
+        return vkSearch;
+    }
 
+    private void updateUI(List mInfoList){
         if ( mAdapter == null) {
-            mAdapter = new PhotoAdapter(userInfos);
+            mAdapter = new PhotoAdapter(mInfoList);
             mPhotoRecyclerView.setAdapter(mAdapter);
         } else{
             mAdapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void response(List response) {
+        UserInfoList userInfoList = UserInfoList.get(getActivity());
+        userInfoList.setUserInfos(response);
+        updateUI(response);
     }
 
     private class PhotoHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Insta Tracker</string>
+    <string name="app_name">Seeker App</string>
     <string name="buttonGPS">Find your location</string>
     <string name="latitudeTextView">Your Latitude</string>
     <string name="longitudeTextView">Your Longitude</string>
