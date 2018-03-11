@@ -1,28 +1,31 @@
 package com.example.nikita.SeekerApp;
 
-import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.GeolocationPermissions;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebViewClient;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
 
 public class CheckLocationFragment extends Fragment{
     private TextView mLatitude;
     private TextView mLongitude;
-    private static final int TAG_CODE_PERMISSION_LOCATION = 0;
     private static final String TOKEN = "Token";
+    String lat;
+    String lon;
+    WebView myWebView;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -37,6 +40,32 @@ public class CheckLocationFragment extends Fragment{
         mLongitude = (TextView) v.findViewById(R.id.longtitudeTextView);
         Button mShow = (Button) v.findViewById(R.id.showButton);
         Button mLocationButton = (Button) v.findViewById(R.id.buttonGPS);
+        Button mMapCordsButton = (Button) v.findViewById(R.id.buttonMapGps);
+        mMapCordsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String webUrl = myWebView.getUrl();
+                if(webUrl.contains("/@")){
+                    String[] tokens = webUrl.split("/@");
+                    String[] tokens1 = tokens[1].split(",");
+                    lat = tokens1[0];
+                    lon = tokens1[1];
+                }
+                mycords(lat,lon);
+            }
+        });
+
+
+        myWebView = (WebView) v.findViewById(R.id.mapWebView);
+        WebSettings webSettings = myWebView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setGeolocationEnabled(true);
+        webSettings.setSupportMultipleWindows(true);
+        myWebView.setWebViewClient(new MyWebViewClient());
+        myWebView.setWebChromeClient(new MyWebChromeClient());
+        String link = "http://maps.google.com/";
+        myWebView.loadUrl(link);
+
         mLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -54,17 +83,6 @@ public class CheckLocationFragment extends Fragment{
     }
 
     public void checkLocation() {
-        if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) ==
-                        PackageManager.PERMISSION_GRANTED) {
-
-        } else {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION},
-                    TAG_CODE_PERMISSION_LOCATION);
-        }
         Intent intent = new Intent(getActivity(), gpsTracker.class);
         getActivity().startService(intent);
 
@@ -76,6 +94,17 @@ public class CheckLocationFragment extends Fragment{
                 mGpsDataReceiver, statusIntentFilter);
 
     }
+
+    public void mycords(String lat, String lon){
+        mLatitude.setText(lat);
+        mLongitude.setText(lon);
+        SharedPreferences settings = getActivity().getSharedPreferences("Token & Location", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(getString(R.string.latitude), lat);
+        editor.putString(getString(R.string.longitude), lon);
+        editor.commit();
+    }
+
     private class GpsDataReceiver extends BroadcastReceiver
     {
         // Prevents instantiation
@@ -85,13 +114,29 @@ public class CheckLocationFragment extends Fragment{
         @Override
         public void onReceive(Context context, Intent intent) {
             String cords[] = intent.getStringArrayExtra(gpsTracker.EXTENDED_DATA);
-            mLatitude.setText(cords[0]);
-            mLongitude.setText(cords[1]);
-            SharedPreferences settings = getActivity().getSharedPreferences("Token & Location", 0);
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putString(getString(R.string.latitude), cords[0]);
-            editor.putString(getString(R.string.longitude), cords[1]);
-            editor.commit();
+            mycords(cords[0], cords[1]);
+        }
+    }
+
+    public class MyWebViewClient extends WebViewClient {
+
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url)
+        {
+
+            view.loadUrl(url);
+            return true;
+        }
+    }
+
+    public class MyWebChromeClient extends WebChromeClient {
+
+        @Override
+        public void onGeolocationPermissionsShowPrompt(String origin,
+                                                       GeolocationPermissions.Callback callback) {
+            // Geolocation permissions coming from this app's Manifest will only be valid for devices with API_VERSION < 23.
+            // On API 23 and above, we must check for permission, and possibly ask for it.
+            callback.invoke(origin, true, false);
         }
     }
 }

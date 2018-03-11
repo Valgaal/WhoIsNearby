@@ -13,4 +13,5 @@
     <string name="userPhoto">A big user photo</string>
     <string name="buttonShowUser">Show user profile</string>
     <string name="send_to">Send vk profile via</string>
+    <string name="buttonMapGps">Get Location from Map</string>
 </resources>
