@@ -62,19 +62,11 @@
 
     </GridLayout>
 
-    <WebView
-        android:id="@+id/mapWebView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
-
-    </WebView>
-
     <Button
         android:id="@+id/showButton"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="2"
+        android:layout_weight="10"
         android:text="@string/showButton" />
 
 </android.widget.LinearLayout>

@@ -42,8 +42,12 @@ public class SelectedUserFragment extends Fragment {
     }
 
     private Uri prepareUri(String userStringUri){
+        StringBuilder sb = new StringBuilder(userStringUri);
+
         if(userStringUri.charAt(0) == '-'){
-            userStringUri = "https://vk.com/club" + userStringUri;
+            sb.deleteCharAt(0);
+            String resultUserStringUri = sb.toString();
+            userStringUri = "https://vk.com/club" + resultUserStringUri;
         }
         if(Pattern.matches("[a-zA-Z]+", userStringUri))
         {
@@ -55,6 +59,7 @@ public class SelectedUserFragment extends Fragment {
         }
         return Uri.parse(userStringUri);
     }
+
     public static SelectedUserFragment newInstance(UUID userId) {
         Bundle args = new Bundle();
         args.putSerializable(ARG_USER_ID, userId);

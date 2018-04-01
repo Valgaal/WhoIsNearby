@@ -11,22 +11,12 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.GeolocationPermissions;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebViewClient;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
 
 public class CheckLocationFragment extends Fragment{
     private TextView mLatitude;
     private TextView mLongitude;
-    private static final String TOKEN = "Token";
-    String lat;
-    String lon;
-    WebView myWebView;
-
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -44,27 +34,10 @@ public class CheckLocationFragment extends Fragment{
         mMapCordsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String webUrl = myWebView.getUrl();
-                if(webUrl.contains("/@")){
-                    String[] tokens = webUrl.split("/@");
-                    String[] tokens1 = tokens[1].split(",");
-                    lat = tokens1[0];
-                    lon = tokens1[1];
-                }
-                mycords(lat,lon);
+                Intent intent = new Intent(getActivity(), WebViewActivity.class);
+                startActivityForResult(intent,1);
             }
         });
-
-
-        myWebView = (WebView) v.findViewById(R.id.mapWebView);
-        WebSettings webSettings = myWebView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webSettings.setGeolocationEnabled(true);
-        webSettings.setSupportMultipleWindows(true);
-        myWebView.setWebViewClient(new MyWebViewClient());
-        myWebView.setWebChromeClient(new MyWebChromeClient());
-        String link = "http://maps.google.com/";
-        myWebView.loadUrl(link);
 
         mLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,7 +68,7 @@ public class CheckLocationFragment extends Fragment{
 
     }
 
-    public void mycords(String lat, String lon){
+    public void saveMyCords(String lat, String lon){
         mLatitude.setText(lat);
         mLongitude.setText(lon);
         SharedPreferences settings = getActivity().getSharedPreferences("Token & Location", 0);
@@ -103,6 +76,15 @@ public class CheckLocationFragment extends Fragment{
         editor.putString(getString(R.string.latitude), lat);
         editor.putString(getString(R.string.longitude), lon);
         editor.commit();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == 1){
+            Bundle coordinatesBundle = data.getExtras();
+            String[] coordinates = coordinatesBundle.getStringArray("Coordinates");
+            saveMyCords(coordinates[0],coordinates[1]);
+        }
     }
 
     private class GpsDataReceiver extends BroadcastReceiver
@@ -114,29 +96,7 @@ public class CheckLocationFragment extends Fragment{
         @Override
         public void onReceive(Context context, Intent intent) {
             String cords[] = intent.getStringArrayExtra(gpsTracker.EXTENDED_DATA);
-            mycords(cords[0], cords[1]);
-        }
-    }
-
-    public class MyWebViewClient extends WebViewClient {
-
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url)
-        {
-
-            view.loadUrl(url);
-            return true;
-        }
-    }
-
-    public class MyWebChromeClient extends WebChromeClient {
-
-        @Override
-        public void onGeolocationPermissionsShowPrompt(String origin,
-                                                       GeolocationPermissions.Callback callback) {
-            // Geolocation permissions coming from this app's Manifest will only be valid for devices with API_VERSION < 23.
-            // On API 23 and above, we must check for permission, and possibly ask for it.
-            callback.invoke(origin, true, false);
+            saveMyCords(cords[0], cords[1]);
         }
     }
 }
