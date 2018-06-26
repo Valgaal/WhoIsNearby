@@ -2,6 +2,8 @@ package com.example.nikita.SeekerApp;
 
 import android.os.AsyncTask;
 
+import com.example.nikita.SeekerApp.models.UserInfo;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
