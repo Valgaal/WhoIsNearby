@@ -87,7 +87,7 @@ public class PhotoListFragment extends Fragment implements ResponseCallback {
 
         public void bind(UserInfo userInfo) {
             mUserInfo = userInfo;
-            mIdTextView.setText(mUserInfo.getVKId());
+            mIdTextView.setText((("ID: ").concat(mUserInfo.getVKId())));
             Picasso.with(getActivity()).load(mUserInfo.getPhoto_url()).into(mPhotoImageView);/// mPhotoImageView picasso
         }
 
