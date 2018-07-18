@@ -1,5 +1,6 @@
 package com.example.nikita.SeekerApp.CheckLocationScreen;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -53,8 +54,8 @@ public class CheckLocationFragment extends Fragment{
         mShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), PhotoListActivity.class);
-                startActivity(intent);
+                    Intent intent = new Intent(getActivity(), PhotoListActivity.class);
+                    startActivity(intent);
             }
         });
         return v;
@@ -85,7 +86,7 @@ public class CheckLocationFragment extends Fragment{
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == 1){
+        if(resultCode == Activity.RESULT_OK){
             Bundle coordinatesBundle = data.getExtras();
             String[] coordinates = coordinatesBundle.getStringArray("Coordinates");
             saveMyCords(coordinates[0],coordinates[1]);
